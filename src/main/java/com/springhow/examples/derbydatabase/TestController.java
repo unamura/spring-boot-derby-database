@@ -19,4 +19,15 @@ public class TestController {
     public List<UserEntity> getUsers() {
         return userRepository.findAll();
     }
+    
+    @GetMapping("/test/one")
+    public String getOneUser(int id) {
+    	UserEntity ue = userRepository.getOne(id);
+    	return ue.getFirstName();
+    }
+    
+    /*@GetMapping("/test/find")
+    public UserEntity findByfirstNameUser(String firstName) {
+    	return userRepository.findByfirstName(firstName);
+    }*/
 }
