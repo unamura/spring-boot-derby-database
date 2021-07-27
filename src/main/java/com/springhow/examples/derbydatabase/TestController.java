@@ -24,7 +24,7 @@ public class TestController {
     @GetMapping("/test/one")
     public String getOneUser(int id) {
     	UserEntity ue = userRepository.getOne(id);
-    	return ue.getFirstName();
+    	return ue.toString();
     }
     
     @GetMapping("/test/find")

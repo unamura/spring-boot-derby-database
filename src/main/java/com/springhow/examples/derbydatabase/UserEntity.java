@@ -13,7 +13,7 @@ public class UserEntity {
 	
     @Id
     //@GeneratedValue
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     //@Column(name="id")
     private Integer id;
     @Column(name="first_name")
