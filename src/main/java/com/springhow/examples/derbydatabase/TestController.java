@@ -26,8 +26,20 @@ public class TestController {
     	return ue.getFirstName();
     }
     
-    /*@GetMapping("/test/find")
-    public UserEntity findByfirstNameUser(String firstName) {
-    	return userRepository.findByfirstName(firstName);
-    }*/
+    @GetMapping("/test/find")
+    public String findByfirstNameUser(String firstName) {
+    	UserEntity ue = userRepository.findByfirstName(firstName);
+    	return ue.toString();
+    }
+    
+    @GetMapping("/test/insert")
+    public void insertUser( String firstName, String lastName) {
+    	UserEntity ue = new UserEntity();
+    	ue.setFirstName(firstName);
+    	ue.setLastName(lastName);
+    	
+
+    	userRepository.save(ue);
+    }
+    
 }
