@@ -13,4 +13,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 
 	@Query("select u from UserEntity u where u.lastName = ?1")
 	List<UserEntity> findByLastName(String lastName);
+	
+	List<UserEntity> findByFirstName(String firstName);
+	
 }

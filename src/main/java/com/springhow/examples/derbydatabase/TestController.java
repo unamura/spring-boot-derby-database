@@ -16,6 +16,21 @@ public class TestController {
 		this.userRepository = userRepository;
 	}
 
+	@GetMapping("test/update")
+	public List<UserEntity> saveTest(int id, String lastName) {
+		UserEntity testUser = new UserEntity();
+		List<UserEntity> uList = userRepository.findAll();
+		for (UserEntity u : uList) {
+			if (u.getId() == id) {
+				u.setLastName(lastName);
+				testUser = u;
+			}
+		}
+
+		userRepository.save(testUser);
+		return userRepository.findAll();
+	}
+
 	@GetMapping("/test/query")
 	public String GetUserQueryJpa(String lastName) {
 		String result = "";
@@ -23,6 +38,18 @@ public class TestController {
 		List<UserEntity> uList = userRepository.findByLastName(lastName);
 		for (UserEntity u : uList) {
 			result += u.getFirstName();
+		}
+
+		return result;
+	}
+
+	@GetMapping("/test/first")
+	public String GetUserQueryFirstJpa(String firstName) {
+		String result = "";
+
+		List<UserEntity> uList = userRepository.findByFirstName(firstName);
+		for (UserEntity u : uList) {
+			result += u.getLastName();
 		}
 
 		return result;

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE xml>
-<named-query name="User.findByLastname">
-  <query>select u from User u where u.lastname = ?1</query>
+<named-query name="User.findByFirstName">
+  <query>select u from UserEntity u where u.firstName = ?1</query>
 </named-query>
