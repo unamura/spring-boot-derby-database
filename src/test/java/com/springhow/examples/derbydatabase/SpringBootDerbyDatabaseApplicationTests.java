@@ -27,6 +27,11 @@ class SpringBootDerbyDatabaseApplicationTests {
 	 * Persistence.createEntityManagerFactory("TestingDB"); em =
 	 * emFactory.createEntityManager(); }
 	 */
+	/*
+	 * DataSource dataSource = new
+	 * EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.DERBY)
+	 * .addScript("classpath:schema.sql") .addScript("classpath:data.sql") .build();
+	 */
 	private static final Logger log = Logger.getLogger(SpringBootDerbyDatabaseApplicationTests.class.getName());
 
 	private static Connection conn;
@@ -50,7 +55,7 @@ class SpringBootDerbyDatabaseApplicationTests {
 	}
 	
 	@Test
-	void testInsertQueryWithDriverManager() throws SQLException {
+	void testInsertQueryWithDataSource() throws SQLException {
 		PreparedStatement prep = conn.prepareStatement("insert into b (TITLE, AUTHOR) values (?, ?)");
 		prep.setString(1, "Il mago del nilo");
 		prep.setString(2, "Christian Jacq");
@@ -72,7 +77,7 @@ class SpringBootDerbyDatabaseApplicationTests {
 			actualBookMap.put(rs.getString(1), bookCol);
 		}
 		log.info("actualBookMap: " + actualBookMap.toString());
-		log.info("End");
+		log.info("End Insert");
 
 		String expectedBookMap = "{1=[Il mago del nilo, Christian Jacq]}";
 		Assertions.assertEquals(expectedBookMap, actualBookMap.toString());
@@ -82,6 +87,49 @@ class SpringBootDerbyDatabaseApplicationTests {
 		 * EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.DERBY)
 		 * .addScript("classpath:schema.sql") .addScript("classpath:data.sql") .build();
 		 */
+	}
+	
+	@Test
+	void testUpdateQueryWithDataSource() throws SQLException {
+		PreparedStatement prep = conn.prepareStatement("insert into b (TITLE, AUTHOR) values (?, ?)");
+		prep.setString(1, "Dopo le esequie");
+		prep.setString(2, "Agatha Christie");
+		prep.addBatch();
+
+		conn.setAutoCommit(false);
+		prep.executeBatch();
+		conn.setAutoCommit(false);
+		ResultSet rs = stat.executeQuery("select ID, TITLE, AUTHOR from b");
+
+		// Map<String, List<String>> actualBookMap = new HashMap<String,
+		// List<String>>();
+		String titleActual = "";
+		String idActual = "";
+		while (rs.next()) {
+			titleActual = rs.getString(2);
+			idActual = rs.getString(1);
+		}
+		rs.close();
+		log.info("Actual title: " + titleActual + " id: " + idActual);
+		String titleExpected = "Dopo le esequie";
+		Assertions.assertEquals(titleExpected, titleActual);
+
+		String updateQuery = "update b set title = ? where ID = ?";
+		PreparedStatement ps = conn.prepareStatement(updateQuery);
+		ps.setString(2, "2");
+		ps.setString(1, "10 Piccoli Indiani");
+		ps.executeUpdate();
+
+		ResultSet rsCheck = stat.executeQuery("select ID, TITLE, AUTHOR from b");
+		String titleUpdatedActual = "";
+		while (rsCheck.next()) {
+			rsCheck.getString(1);
+			titleUpdatedActual = rsCheck.getString(2);
+			log.info("id: " + rsCheck.getString(1) + " row: " + rsCheck.getString(2));
+		}
+		String titleUpdatedExpected = "10 Piccoli Indiani";
+		Assertions.assertEquals(titleUpdatedExpected, titleUpdatedActual);
+		rsCheck.close();
 	}
 	
 	@AfterAll
@@ -94,8 +142,4 @@ class SpringBootDerbyDatabaseApplicationTests {
 		conn.close();
 	}
 
-	/*@AfterAll
-	void closeConnection() {
-		
-	}*/
 }

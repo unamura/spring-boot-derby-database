@@ -10,36 +10,48 @@ import java.util.List;
 public class TestController {
 
 	@Autowired
-    UserRepository userRepository;
+	UserRepository userRepository;
 
-    public TestController(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+	public TestController(UserRepository userRepository) {
+		this.userRepository = userRepository;
+	}
 
-    @GetMapping("/test")
-    public List<UserEntity> getUsers() {
-        return userRepository.findAll();
-    }
-    
-    @GetMapping("/test/one")
-    public String getOneUser(int id) {
-    	UserEntity ue = userRepository.getOne(id);
-    	return ue.toString();
-    }
-    
-    @GetMapping("/test/find")
-    public String findByfirstNameUser(String firstName) {
-    	UserEntity ue = userRepository.findByfirstName(firstName);
-    	return ue.toString();
-    }
-    
-    @GetMapping("/test/insert")
-    public String insertUser( String firstName, String lastName) {
-    	UserEntity ue = new UserEntity(firstName, lastName);
-    	//ue.setId(4);
-    	System.out.println(ue.toString());
-    	userRepository.save(ue);
-    	return "done";
-    }
-    
+	@GetMapping("/test/query")
+	public String GetUserQueryJpa(String lastName) {
+		String result = "";
+
+		List<UserEntity> uList = userRepository.findByLastName(lastName);
+		for (UserEntity u : uList) {
+			result += u.getFirstName();
+		}
+
+		return result;
+	}
+
+	@GetMapping("/test")
+	public List<UserEntity> getUsers() {
+		return userRepository.findAll();
+	}
+
+	@GetMapping("/test/one")
+	public String getOneUser(int id) {
+		UserEntity ue = userRepository.getOne(id);
+		return ue.toString();
+	}
+
+	@GetMapping("/test/find")
+	public String findByfirstNameUser(String firstName) {
+		UserEntity ue = userRepository.findByfirstName(firstName);
+		return ue.toString();
+	}
+
+	@GetMapping("/test/insert")
+	public String insertUser(String firstName, String lastName) {
+		UserEntity ue = new UserEntity(firstName, lastName);
+		// ue.setId(4);
+		System.out.println(ue.toString());
+		userRepository.save(ue);
+		return "done";
+	}
+
 }
